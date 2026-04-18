@@ -148,11 +148,13 @@ input[type=file]{display:none;}
       </div>
       <div class="frow"><label>Font size</label>
         <select id="body-size" onchange="renderLetter()">
-          <option value="11px">11px (small)</option>
-          <option value="12px">12px</option>
-          <option value="13px" selected>13px (default)</option>
-          <option value="14px">14px</option>
-          <option value="15px">15px (large)</option>
+          <option value="9pt">9pt (small)</option>
+          <option value="10pt">10pt</option>
+          <option value="11pt">11pt</option>
+          <option value="12pt" selected>12pt (default)</option>
+          <option value="13pt">13pt</option>
+          <option value="14pt">14pt (large)</option>
+          <option value="16pt">16pt</option>
         </select>
       </div>
     </div>
@@ -287,14 +289,18 @@ input[type=file]{display:none;}
           <option value="'Courier New',monospace">Courier New</option>
         </select>
       </div>
-      <div class="frow"><label>Name size</label>
+      <div class="frow"><label>Name size (pt)</label>
         <select id="lh-name-size" onchange="renderLetter()">
-          <option value="20px">20px</option>
-          <option value="22px">22px</option>
-          <option value="24px">24px</option>
-          <option value="27px" selected>27px</option>
-          <option value="30px">30px</option>
-          <option value="34px">34px</option>
+          <option value="14pt">14pt (small)</option>
+          <option value="16pt">16pt</option>
+          <option value="18pt">18pt</option>
+          <option value="20pt" selected>20pt (default)</option>
+          <option value="22pt">22pt</option>
+          <option value="24pt">24pt</option>
+          <option value="26pt">26pt</option>
+          <option value="28pt">28pt (large)</option>
+          <option value="32pt">32pt</option>
+          <option value="36pt">36pt</option>
         </select>
       </div>
       <div class="color-row">
@@ -347,13 +353,16 @@ input[type=file]{display:none;}
         <button class="btn btn-out btn-sm" onclick="document.getElementById('lh-logo-up').click()">Upload Logo</button>
         <input type="file" id="lh-logo-up" accept="image/*" onchange="uploadLogo(this)">
       </div>
-      <div class="frow"><label>Logo size</label>
+      <div class="frow"><label>Logo size (cm)</label>
         <select id="lh-logo-size" onchange="renderLetter()">
-          <option value="60px">60px (small)</option>
-          <option value="75px">75px</option>
-          <option value="88px" selected>88px (default)</option>
-          <option value="100px">100px</option>
-          <option value="120px">120px (large)</option>
+          <option value="1.5cm">1.5 cm (small)</option>
+          <option value="2cm">2.0 cm</option>
+          <option value="2.5cm">2.5 cm</option>
+          <option value="3cm" selected>3.0 cm (default)</option>
+          <option value="3.5cm">3.5 cm</option>
+          <option value="4cm">4.0 cm</option>
+          <option value="4.5cm">4.5 cm (large)</option>
+          <option value="5cm">5.0 cm</option>
         </select>
       </div>
     </div>
@@ -439,12 +448,12 @@ function replaceAsset(key, input) {
 var lh = {
   orgName: 'AGAPE SPECIAL CENTRE',
   nameFontFamily: "'EB Garamond',serif",
-  nameFontSize: '27px',
+  nameFontSize: '20pt',
   nameColor: '#1a3a6b',
   l1: 'Kiamumbi, Rabat Street,', l2: 'Off Kamiti Road.', l3: 'P.O. Box 79475-00200 Nairobi.',
   r1: 'Cell: 0720 725 943 / 0722 145 674', r2: 'Email: agapelandspecialunit@gmail.com', r3: 'Website: www.agapelandspecialunit.org',
   lineColor: '#222222', lineSize: '1.5px',
-  logoSrc: ASSETS.logo, logoSize: '88px'
+  logoSrc: ASSETS.logo, logoSize: '3cm'
 };
 
 // Saved profiles (persisted in localStorage)
@@ -520,10 +529,10 @@ function applyLetterhead() { readLHFromForm(); renderLetter(); switchTab('letter
 
 function resetToASC() {
   lh = {
-    orgName:'AGAPE SPECIAL CENTRE', nameFontFamily:"'EB Garamond',serif", nameFontSize:'27px', nameColor:'#1a3a6b',
+    orgName:'AGAPE SPECIAL CENTRE', nameFontFamily:"'EB Garamond',serif", nameFontSize:'20pt', nameColor:'#1a3a6b',
     l1:'Kiamumbi, Rabat Street,', l2:'Off Kamiti Road.', l3:'P.O. Box 79475-00200 Nairobi.',
     r1:'Cell: 0720 725 943 / 0722 145 674', r2:'Email: agapelandspecialunit@gmail.com', r3:'Website: www.agapelandspecialunit.org',
-    lineColor:'#222222', lineSize:'1.5px', logoSrc:ASSETS.logo, logoSize:'88px'
+    lineColor:'#222222', lineSize:'1.5px', logoSrc:ASSETS.logo, logoSize:'3cm'
   };
   writeLHToForm();
   g('lh-logo-preview').src = lh.logoSrc;
@@ -568,9 +577,9 @@ function fmtDate(v){ if(!v)return ''; var d=new Date(v); return d.toLocaleDateSt
 
 // ── Build letterhead HTML (shared by both tabs) ────────────────────────
 function buildLHHtml(lhData, logoSrc) {
-  var ls = parseInt(lhData.logoSize) || 88;
+  var ls = lhData.logoSize || '3cm';
   var logoHtml = logoSrc
-    ? '<div class="lh-logo" style="width:'+ls+'px;height:'+ls+'px;"><img src="'+logoSrc+'" style="width:100%;height:100%;object-fit:contain;display:block;"></div>'
+    ? '<div class="lh-logo" style="width:'+ls+';height:'+ls+';"><img src="'+logoSrc+'" style="width:100%;height:100%;object-fit:contain;display:block;"></div>'
     : '';
   var hasLeft = lhData.l1||lhData.l2||lhData.l3;
   var hasRight = lhData.r1||lhData.r2||lhData.r3;
