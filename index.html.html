@@ -52,15 +52,11 @@ input[type=file]{display:none;}
 .upload-zone.has-file{border-color:#2d7d46;border-style:solid;background:#f0faf4;}
 .upload-zone p{font-size:12px;color:#7a7568;margin-top:5px;}
 .upload-zone .fn{font-size:12px;font-weight:500;color:#2d7d46;margin-top:3px;}
-.preview-panel{width:460px;min-width:200px;background:#e0ddd6;border-left:none;display:flex;flex-direction:column;overflow:hidden;}
-.divider{width:6px;background:#ddd8cc;cursor:col-resize;flex-shrink:0;position:relative;transition:background .15s;display:flex;align-items:center;justify-content:center;}
-.divider:hover,.divider.dragging{background:#1a3a6b;}
-.divider::after{content:'⋮';font-size:14px;color:#aaa;line-height:1;pointer-events:none;}
-.divider:hover::after,.divider.dragging::after{color:#fff;}
+.preview-panel{width:460px;min-width:460px;background:#e0ddd6;border-left:1px solid #ddd8cc;display:flex;flex-direction:column;overflow:hidden;}
 .ph{padding:12px 18px;background:#fff;border-bottom:1px solid #ddd8cc;font-size:12px;font-weight:500;color:#7a7568;display:flex;align-items:center;justify-content:space-between;}
 .pscroll{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;align-items:center;}
 /* A4 letter page */
-.letter-page{width:420px;min-height:594px;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.13);border-radius:3px;padding:28px 34px 40px;}
+.letter-page{width:420px;min-height:594px;background:#fff;box-shadow:0 4px 24px rgba(0,0,0,.13);border-radius:3px;padding:28px 34px 40px;transition:width .2s,min-height .2s;}
 /* Letterhead region */
 .lh{display:flex;align-items:flex-start;padding-bottom:8px;margin-bottom:12px;border-bottom:1.5px solid #222;}
 .lh-logo{flex-shrink:0;margin-right:8px;}
@@ -152,11 +148,13 @@ input[type=file]{display:none;}
       </div>
       <div class="frow"><label>Font size</label>
         <select id="body-size" onchange="renderLetter()">
-          <option value="11px">11px (small)</option>
-          <option value="12px">12px</option>
-          <option value="13px" selected>13px (default)</option>
-          <option value="14px">14px</option>
-          <option value="15px">15px (large)</option>
+          <option value="9pt">9pt (small)</option>
+          <option value="10pt">10pt</option>
+          <option value="11pt">11pt</option>
+          <option value="12pt" selected>12pt (default)</option>
+          <option value="13pt">13pt</option>
+          <option value="14pt">14pt (large)</option>
+          <option value="16pt">16pt</option>
         </select>
       </div>
     </div>
@@ -189,14 +187,26 @@ input[type=file]{display:none;}
       <div class="cbrow"><input type="checkbox" id="l-stmp" checked><label for="l-stmp">Include stamp</label></div>
     </div>
 
+    <div class="sec">
+      <div class="slabel">Page Size</div>
+      <div class="frow"><label>Paper format</label>
+        <select id="page-size-letter" onchange="syncPageSize('letter')">
+          <option value="a4" selected>A4  (210 × 297 mm)</option>
+          <option value="letter">US Letter  (216 × 279 mm)</option>
+          <option value="legal">US Legal  (216 × 356 mm)</option>
+          <option value="a5">A5  (148 × 210 mm)</option>
+          <option value="b5">B5  (176 × 250 mm)</option>
+        </select>
+      </div>
+    </div>
+
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
       <button class="btn btn-gold" onclick="printLetter()">⬇ Export as PDF</button>
       <button class="btn btn-blue" onclick="exportWord()">⬇ Export as Word (.docx)</button>
     </div>
   </div>
 
-  <div class="divider" id="div-letter" onmousedown="startDrag(event,'letter')"></div>
-  <div class="preview-panel" id="preview-letter">
+  <div class="preview-panel">
     <div class="ph"><span>Live Preview</span><span id="lh-profile-label">Current letterhead</span></div>
     <div class="pscroll"><div class="letter-page" id="letter-preview"></div></div>
     <div style="padding:10px 18px;background:#fff;border-top:1px solid #ddd8cc;display:flex;gap:8px;justify-content:flex-end;">
@@ -292,14 +302,18 @@ input[type=file]{display:none;}
           <option value="'Courier New',monospace">Courier New</option>
         </select>
       </div>
-      <div class="frow"><label>Name size</label>
+      <div class="frow"><label>Name size (pt)</label>
         <select id="lh-name-size" onchange="renderLetter()">
-          <option value="20px">20px</option>
-          <option value="22px">22px</option>
-          <option value="24px">24px</option>
-          <option value="27px" selected>27px</option>
-          <option value="30px">30px</option>
-          <option value="34px">34px</option>
+          <option value="14pt">14pt (small)</option>
+          <option value="16pt">16pt</option>
+          <option value="18pt">18pt</option>
+          <option value="20pt" selected>20pt (default)</option>
+          <option value="22pt">22pt</option>
+          <option value="24pt">24pt</option>
+          <option value="26pt">26pt</option>
+          <option value="28pt">28pt (large)</option>
+          <option value="32pt">32pt</option>
+          <option value="36pt">36pt</option>
         </select>
       </div>
       <div class="color-row">
@@ -352,15 +366,32 @@ input[type=file]{display:none;}
         <button class="btn btn-out btn-sm" onclick="document.getElementById('lh-logo-up').click()">Upload Logo</button>
         <input type="file" id="lh-logo-up" accept="image/*" onchange="uploadLogo(this)">
       </div>
-      <div class="frow"><label>Logo size</label>
+      <div class="frow"><label>Logo size (cm)</label>
         <select id="lh-logo-size" onchange="renderLetter()">
-          <option value="60px">60px (small)</option>
-          <option value="75px">75px</option>
-          <option value="88px" selected>88px (default)</option>
-          <option value="100px">100px</option>
-          <option value="120px">120px (large)</option>
+          <option value="1.5cm">1.5 cm (small)</option>
+          <option value="2cm">2.0 cm</option>
+          <option value="2.5cm">2.5 cm</option>
+          <option value="3cm" selected>3.0 cm (default)</option>
+          <option value="3.5cm">3.5 cm</option>
+          <option value="4cm">4.0 cm</option>
+          <option value="4.5cm">4.5 cm (large)</option>
+          <option value="5cm">5.0 cm</option>
         </select>
       </div>
+    </div>
+
+    <div class="sec">
+      <div class="slabel">Page Size</div>
+      <div class="frow"><label>Paper format</label>
+        <select id="page-size" onchange="applyPageSize()">
+          <option value="a4" selected>A4  (210 × 297 mm)</option>
+          <option value="letter">US Letter  (216 × 279 mm)</option>
+          <option value="legal">US Legal  (216 × 356 mm)</option>
+          <option value="a5">A5  (148 × 210 mm)</option>
+          <option value="b5">B5  (176 × 250 mm)</option>
+        </select>
+      </div>
+      <p class="hint">Updates the preview and the exported PDF page size.</p>
     </div>
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -370,8 +401,7 @@ input[type=file]{display:none;}
   </div>
 
   <!-- Letterhead preview -->
-  <div class="divider" id="div-letterhead" onmousedown="startDrag(event,'letterhead')"></div>
-  <div class="preview-panel" id="preview-letterhead">
+  <div class="preview-panel">
     <div class="ph"><span>Letterhead Preview</span></div>
     <div class="pscroll">
       <div class="letter-page" id="lh-preview-page" style="min-height:auto;"></div>
@@ -445,12 +475,12 @@ function replaceAsset(key, input) {
 var lh = {
   orgName: 'AGAPE SPECIAL CENTRE',
   nameFontFamily: "'EB Garamond',serif",
-  nameFontSize: '27px',
+  nameFontSize: '20pt',
   nameColor: '#1a3a6b',
   l1: 'Kiamumbi, Rabat Street,', l2: 'Off Kamiti Road.', l3: 'P.O. Box 79475-00200 Nairobi.',
   r1: 'Cell: 0720 725 943 / 0722 145 674', r2: 'Email: agapelandspecialunit@gmail.com', r3: 'Website: www.agapelandspecialunit.org',
   lineColor: '#222222', lineSize: '1.5px',
-  logoSrc: ASSETS.logo, logoSize: '88px'
+  logoSrc: ASSETS.logo, logoSize: '3cm'
 };
 
 // Saved profiles (persisted in localStorage)
@@ -526,10 +556,10 @@ function applyLetterhead() { readLHFromForm(); renderLetter(); switchTab('letter
 
 function resetToASC() {
   lh = {
-    orgName:'AGAPE SPECIAL CENTRE', nameFontFamily:"'EB Garamond',serif", nameFontSize:'27px', nameColor:'#1a3a6b',
+    orgName:'AGAPE SPECIAL CENTRE', nameFontFamily:"'EB Garamond',serif", nameFontSize:'20pt', nameColor:'#1a3a6b',
     l1:'Kiamumbi, Rabat Street,', l2:'Off Kamiti Road.', l3:'P.O. Box 79475-00200 Nairobi.',
     r1:'Cell: 0720 725 943 / 0722 145 674', r2:'Email: agapelandspecialunit@gmail.com', r3:'Website: www.agapelandspecialunit.org',
-    lineColor:'#222222', lineSize:'1.5px', logoSrc:ASSETS.logo, logoSize:'88px'
+    lineColor:'#222222', lineSize:'1.5px', logoSrc:ASSETS.logo, logoSize:'3cm'
   };
   writeLHToForm();
   g('lh-logo-preview').src = lh.logoSrc;
@@ -574,9 +604,9 @@ function fmtDate(v){ if(!v)return ''; var d=new Date(v); return d.toLocaleDateSt
 
 // ── Build letterhead HTML (shared by both tabs) ────────────────────────
 function buildLHHtml(lhData, logoSrc) {
-  var ls = parseInt(lhData.logoSize) || 88;
+  var ls = lhData.logoSize || '3cm';
   var logoHtml = logoSrc
-    ? '<div class="lh-logo" style="width:'+ls+'px;height:'+ls+'px;"><img src="'+logoSrc+'" style="width:100%;height:100%;object-fit:contain;display:block;"></div>'
+    ? '<div class="lh-logo" style="width:'+ls+';height:'+ls+';"><img src="'+logoSrc+'" style="width:100%;height:100%;object-fit:contain;display:block;"></div>'
     : '';
   var hasLeft = lhData.l1||lhData.l2||lhData.l3;
   var hasRight = lhData.r1||lhData.r2||lhData.r3;
@@ -593,6 +623,43 @@ function buildLHHtml(lhData, logoSrc) {
     + '<div class="lh-title" style="font-family:'+lhData.nameFontFamily+';font-size:'+lhData.nameFontSize+';color:'+lhData.nameColor+';">'+lhData.orgName+'</div>'
     + addrHtml
     + '</div></div>';
+}
+
+// ── Page size system ─────────────────────────────────────────────────
+var PAGE_SIZES = {
+  a4:     { wMM: 210, hMM: 297, wPx: 420, hPx: 594, marginMM: '20mm 18mm', label: 'A4' },
+  letter: { wMM: 216, hMM: 279, wPx: 432, hPx: 558, marginMM: '25mm 20mm', label: 'US Letter' },
+  legal:  { wMM: 216, hMM: 356, wPx: 432, hPx: 712, marginMM: '25mm 20mm', label: 'US Legal' },
+  a5:     { wMM: 148, hMM: 210, wPx: 296, hPx: 420, marginMM: '14mm 14mm', label: 'A5' },
+  b5:     { wMM: 176, hMM: 250, wPx: 352, hPx: 500, marginMM: '18mm 16mm', label: 'B5' }
+};
+var currentPageSize = 'a4';
+
+function applyPageSize() {
+  var sel = g('page-size') || g('page-size-letter');
+  if (!sel) return;
+  currentPageSize = sel.value;
+  // Sync both dropdowns
+  ['page-size','page-size-letter'].forEach(function(id){
+    var el = g(id); if(el) el.value = currentPageSize;
+  });
+  var ps = PAGE_SIZES[currentPageSize];
+  // Update all letter-page elements
+  document.querySelectorAll('.letter-page').forEach(function(el){
+    el.style.width = ps.wPx + 'px';
+    el.style.minHeight = ps.hPx + 'px';
+  });
+  // Update preview panel min-width hint
+  var pv = document.querySelector('.preview-panel');
+  if (pv) { pv.style.minWidth = (ps.wPx + 40) + 'px'; pv.style.width = (ps.wPx + 40) + 'px'; }
+  stat('Page size set to ' + ps.label + ' (' + ps.wMM + ' × ' + ps.hMM + ' mm)');
+  renderLetter();
+}
+
+function syncPageSize(source) {
+  var el = g('page-size-' + source) || g('page-size');
+  if (el) { g('page-size') && (g('page-size').value = el.value); }
+  applyPageSize();
 }
 
 // ── Render letter preview ─────────────────────────────────────────────
@@ -651,6 +718,7 @@ function renderLetter() {
 });
 
 g('l-date').value = new Date().toISOString().split('T')[0];
+applyPageSize();
 renderLetter();
 document.getElementById('header-title').textContent = 'DocStamp — Letter & Document Tool';
 
@@ -662,7 +730,8 @@ function printLetter() {
     + '<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">'
     + '<style>'
     + '*{box-sizing:border-box;margin:0;padding:0;}'
-    + 'body{font-family:'+bf+';font-size:'+bs+';line-height:1.7;color:#111;margin:28mm 22mm;}'
+    + (function(){ var ps=PAGE_SIZES[currentPageSize]; return '@page{size:'+ps.wMM+'mm '+ps.hMM+'mm;margin:'+ps.marginMM+';}'; }())
+    + 'body{font-family:'+bf+';font-size:'+bs+';line-height:1.7;color:#111;margin:'+PAGE_SIZES[currentPageSize].marginMM+'}'
     + '.lh{display:flex;align-items:flex-start;padding-bottom:8px;margin-bottom:12px;}'
     + '.lh-logo{flex-shrink:0;margin-right:8px;}'
     + '.lh-logo img{display:block;object-fit:contain;}'
@@ -681,7 +750,7 @@ function printLetter() {
     + '.sig-row{display:flex;align-items:flex-end;gap:24px;margin-top:8px;}'
     + '.sig-img{height:55px;display:block;}'
     + '.stamp-img{height:80px;display:block;}'
-    + '@media print{body{margin:0;}}'
+    + '@media print{body{}}'
     + '</style></head><body>'+bodyHtml+'</body></html>';
   var iframe = document.createElement('iframe');
   iframe.style.display='none'; document.body.appendChild(iframe);
@@ -854,37 +923,6 @@ async function downloadStamped() {
   var url=URL.createObjectURL(new Blob([bytes],{type:'application/pdf'}));
   var a3=document.createElement('a'); a3.href=url; a3.download='Stamped_Document.pdf'; a3.click();
   stat('Stamped PDF downloaded.');
-}
-
-// ── Resizable divider ────────────────────────────────────────────────
-var _drag = null;
-function startDrag(e, tabId) {
-  e.preventDefault();
-  var divider = document.getElementById('div-'+tabId);
-  var preview = document.getElementById('preview-'+tabId);
-  var container = divider.parentElement;
-  divider.classList.add('dragging');
-  _drag = { tabId: tabId, divider: divider, preview: preview, container: container, startX: e.clientX, startW: preview.offsetWidth };
-  document.addEventListener('mousemove', onDrag);
-  document.addEventListener('mouseup', stopDrag);
-  document.body.style.cursor = 'col-resize';
-  document.body.style.userSelect = 'none';
-}
-function onDrag(e) {
-  if (!_drag) return;
-  var delta = _drag.startX - e.clientX;
-  var newW = Math.max(200, Math.min(_drag.container.offsetWidth - 300, _drag.startW + delta));
-  _drag.preview.style.width = newW + 'px';
-  _drag.preview.style.minWidth = newW + 'px';
-}
-function stopDrag() {
-  if (!_drag) return;
-  _drag.divider.classList.remove('dragging');
-  document.removeEventListener('mousemove', onDrag);
-  document.removeEventListener('mouseup', stopDrag);
-  document.body.style.cursor = '';
-  document.body.style.userSelect = '';
-  _drag = null;
 }
 </script>
 </body>
